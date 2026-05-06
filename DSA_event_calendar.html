@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Event Calendar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f8961e;
+            --danger: #e63946;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --card-bg: #ffffff;
+            --body-bg: #f0f2f5;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --primary: #5a7dff;
+            --primary-light: #6d8eff;
+            --secondary: #4a47c9;
+            --accent: #ff4d9e;
+            --success: #5bd0ff;
+            --warning: #ffa94d;
+            --danger: #ff6b7a;
+            --light: #2d3748;
+            --dark: #f7fafc;
+            --gray: #a0aec0;
+            --card-bg: #2d3748;
+            --body-bg: #1a202c;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--dark);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(15deg);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .panel:hover {
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .panel h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary-light);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel h2 i {
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-color: var(--light);
+            color: var(--dark);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        button {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c1121f;
+            transform: translateY(-2px);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e85d04;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: var(--dark);
+        }
+
+        .btn-success:hover {
+            background-color: #3a86ff;
+            transform: translateY(-2px);
+        }
+
+        .events-list {
+            list-style: none;
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .events-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .events-list::-webkit-scrollbar-track {
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        .events-list::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .event-item {
+            padding: 18px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background-color: var(--light);
+            border-left: 5px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .event-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-item.conflict {
+            border-left-color: var(--danger);
+            background-color: rgba(230, 57, 70, 0.1);
+        }
+
+        .event-item.newly-added {
+            animation: slideIn 0.5s ease;
+            border-left-color: var(--success);
+            background-color: rgba(76, 201, 240, 0.1);
+        }
+
+        .event-info h3 {
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        .event-time {
+            color: var(--gray);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .delete-btn {
+            background-color: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            width: auto;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+
+        .delete-btn:hover {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .dsa-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .dsa-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .queue-item, .stack-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: var(--light);
+            border-radius: 8px;
+            transition: var(--transition);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .queue-item:hover, .stack-item:hover {
+            transform: translateX(5px);
+        }
+
+        .conflict-message {
+            color: var(--danger);
+            font-weight: 600;
+            margin-top: 15px;
+            padding: 12px 15px;
+            background-color: rgba(230, 57, 70, 0.1);
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .queue-processed-message {
+            color: var(--success);
+            font-weight: 600;
+            margin-top: 15px;
+            padding: 12px 15px;
+            background-color: rgba(76, 201, 240, 0.1);
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .no-events {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        .dsa-visualization {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: var(--radius);
+            color: white;
+        }
+
+        .dsa-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dsa-visualization ul {
+            list-style: none;
+        }
+
+        .dsa-visualization li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dsa-visualization li i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background-color: var(--primary-light);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-buttons button {
+            flex: 1;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .processing-indicator {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .processing-indicator i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>College Event Calendar</h1>
+                <p class="subtitle">Auto-Queue Processing: Waiting events automatically fill deleted slots</p>
+            </div>
+            <button class="theme-toggle" id="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+        
+        <div class="main-content">
+            <div class="panel">
+                <h2><i class="fas fa-plus-circle"></i> Add New Event</h2>
+                <form id="event-form">
+                    <div class="form-group">
+                        <label for="event-title">Event Title</label>
+                        <input type="text" id="event-title" placeholder="e.g., CS101 Lecture" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="start-time">Start Time</label>
+                        <input type="datetime-local" id="start-time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end-time">End Time</label>
+                        <input type="datetime-local" id="end-time" required>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-calendar-plus"></i> Add Event
+                    </button>
+                </form>
+                
+                <div class="conflict-message" id="conflict-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Time conflict detected! This event has been added to the waiting queue.</span>
+                </div>
+                
+                <div class="queue-processed-message" id="queue-processed-message">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="queue-message-text">Queue event automatically scheduled!</span>
+                </div>
+                
+                <div class="dsa-visualization">
+                    <div class="dsa-title"><i class="fas fa-project-diagram"></i> DSA Concepts in Action</div>
+                    <ul>
+                        <li><i class="fas fa-layer-group"></i> Arrays store all events</li>
+                        <li><i class="fas fa-sort-amount-up"></i> Insertion Sort orders events by time</li>
+                        <li><i class="fas fa-undo"></i> Stack enables undo functionality</li>
+                        <li><i class="fas fa-stream"></i> Queue holds conflicting events</li>
+                        <li><i class="fas fa-sync-alt"></i> Auto-processing when events are deleted</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h2><i class="fas fa-calendar-alt"></i> Scheduled Events</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-value" id="events-count">0</div>
+                        <div class="stat-label">Scheduled Events</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="conflicts-count">0</div>
+                        <div class="stat-label">Conflicts Found</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="queue-count">0</div>
+                        <div class="stat-label">In Queue</div>
+                    </div>
+                </div>
+                
+                <div class="processing-indicator" id="processing-indicator">
+                    <i class="fas fa-sync-alt"></i> Processing queue events...
+                </div>
+                
+                <div id="events-container">
+                    <div class="no-events" id="no-events">No events scheduled yet. Add your first event!</div>
+                    <ul class="events-list" id="events-list"></ul>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="undo-btn" class="btn-warning" disabled>
+                        <i class="fas fa-undo"></i> Undo Last Deletion
+                    </button>
+                    <button id="clear-btn" class="btn-danger">
+                        <i class="fas fa-trash"></i> Clear All Events
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dsa-section">
+            <div class="panel">
+                <h2><i class="fas fa-clock"></i> Waiting Queue (Conflicting Events)</h2>
+                <div id="queue-container">
+                    <div class="no-events" id="no-queue">No events in waiting queue</div>
+                    <div id="queue-list"></div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h2><i class="fas fa-history"></i> Deleted Events (Stack)</h2>
+                <div id="stack-container">
+                    <div class="no-events" id="no-stack">No deleted events to undo</div>
+                    <div id="stack-list"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Event Calendar with Auto-Queue Processing | College DSA Project</p>
+        </div>
+    </div>
+
+    <script>
+        // DSA Implementation
+        class EventCalendar {
+            constructor() {
+                this.events = []; // Array to store events
+                this.deletedStack = []; // Stack for undo functionality
+                this.waitingQueue = []; // Queue for conflicting events
+                this.conflictCount = 0; // Track number of conflicts
+                this.queueProcessedCount = 0; // Track queue processing
+            }
+            
+            // Add event with conflict checking
+            addEvent(title, startTime, endTime) {
+                const newEvent = {
+                    id: Date.now(),
+                    title,
+                    startTime: new Date(startTime),
+                    endTime: new Date(endTime),
+                    isNewlyAdded: false
+                };
+                
+                // Check for conflicts
+                if (this.hasConflict(newEvent)) {
+                    this.waitingQueue.push(newEvent); // Add to queue if conflict
+                    this.conflictCount++;
+                    return { success: false, message: "Conflict detected! Added to waiting queue." };
+                } else {
+                    newEvent.isNewlyAdded = true;
+                    this.events.push(newEvent);
+                    this.insertionSortEvents(); // Sort events by start time
+                    return { success: true, message: "Event added successfully!" };
+                }
+            }
+            
+            // Conflict checking algorithm
+            hasConflict(newEvent) {
+                for (const event of this.events) {
+                    if (this.eventsOverlap(event, newEvent)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            // Overlap checking formula: (startA < endB && startB < endA)
+            eventsOverlap(eventA, eventB) {
+                return eventA.startTime < eventB.endTime && eventB.startTime < eventA.endTime;
+            }
+            
+            // Insertion sort to order events by start time
+            insertionSortEvents() {
+                for (let i = 1; i < this.events.length; i++) {
+                    const current = this.events[i];
+                    let j = i - 1;
+                    
+                    while (j >= 0 && this.events[j].startTime > current.startTime) {
+                        this.events[j + 1] = this.events[j];
+                        j--;
+                    }
+                    this.events[j + 1] = current;
+                }
+            }
+            
+            // Delete event and process waiting queue
+            deleteEvent(id) {
+                const index = this.events.findIndex(event => event.id === id);
+                if (index !== -1) {
+                    const deletedEvent = this.events.splice(index, 1)[0];
+                    this.deletedStack.push(deletedEvent); // Push to stack for undo
+                    
+                    // Process waiting queue after deletion
+                    const processedEvents = this.processWaitingQueue();
+                    
+                    return {
+                        deletedEvent: deletedEvent,
+                        processedEvents: processedEvents
+                    };
+                }
+                return null;
+            }
+            
+            // Process waiting queue after event deletion
+            processWaitingQueue() {
+                const processedEvents = [];
+                
+                // Try to schedule each event in the queue
+                for (let i = 0; i < this.waitingQueue.length; i++) {
+                    const event = this.waitingQueue[i];
+                    
+                    if (!this.hasConflict(event)) {
+                        // No conflict, add to scheduled events
+                        event.isNewlyAdded = true;
+                        this.events.push(event);
+                        this.waitingQueue.splice(i, 1);
+                        processedEvents.push(event);
+                        this.queueProcessedCount++;
+                        i--; // Adjust index after removal
+                    }
+                }
+                
+                // Sort events after adding from queue
+                if (processedEvents.length > 0) {
+                    this.insertionSortEvents();
+                }
+                
+                return processedEvents;
+            }
+            
+            // Undo last deletion
+            undoDelete() {
+                if (this.deletedStack.length > 0) {
+                    const eventToRestore = this.deletedStack.pop();
+                    
+                    // Check if restoring would cause conflict
+                    if (!this.hasConflict(eventToRestore)) {
+                        eventToRestore.isNewlyAdded = true;
+                        this.events.push(eventToRestore);
+                        this.insertionSortEvents();
+                        
+                        // Process queue after undo
+                        this.processWaitingQueue();
+                        
+                        return { success: true, event: eventToRestore };
+                    } else {
+                        // If conflict, add to waiting queue
+                        this.waitingQueue.push(eventToRestore);
+                        this.conflictCount++;
+                        return { 
+                            success: false, 
+                            event: eventToRestore,
+                            message: "Restoration would cause conflict. Added to waiting queue."
+                        };
+                    }
+                }
+                return null;
+            }
+            
+            // Clear all events
+            clearAllEvents() {
+                this.events = [];
+                this.deletedStack = [];
+                this.waitingQueue = [];
+                this.conflictCount = 0;
+                this.queueProcessedCount = 0;
+            }
+        }
+
+        // UI Implementation
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendar = new EventCalendar();
+            const eventForm = document.getElementById('event-form');
+            const eventsList = document.getElementById('events-list');
+            const queueList = document.getElementById('queue-list');
+            const stackList = document.getElementById('stack-list');
+            const undoBtn = document.getElementById('undo-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const conflictMessage = document.getElementById('conflict-message');
+            const queueProcessedMessage = document.getElementById('queue-processed-message');
+            const queueMessageText = document.getElementById('queue-message-text');
+            const processingIndicator = document.getElementById('processing-indicator');
+            const noEvents = document.getElementById('no-events');
+            const noQueue = document.getElementById('no-queue');
+            const noStack = document.getElementById('no-stack');
+            const themeToggle = document.getElementById('theme-toggle');
+            const eventsCount = document.getElementById('events-count');
+            const conflictsCount = document.getElementById('conflicts-count');
+            const queueCount = document.getElementById('queue-count');
+            
+            // Set default datetime values to current time and 1 hour ahead
+            const now = new Date();
+            const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+            
+            document.getElementById('start-time').value = formatDateTime(now);
+            document.getElementById('end-time').value = formatDateTime(oneHourLater);
+            
+            // Format datetime for input field
+            function formatDateTime(date) {
+                return date.toISOString().slice(0, 16);
+            }
+            
+            // Update statistics
+            function updateStats() {
+                eventsCount.textContent = calendar.events.length;
+                conflictsCount.textContent = calendar.conflictCount;
+                queueCount.textContent = calendar.waitingQueue.length;
+            }
+            
+            // Show queue processed message
+            function showQueueProcessedMessage(events) {
+                if (events.length === 1) {
+                    queueMessageText.textContent = `"${events[0].title}" automatically scheduled from queue!`;
+                } else if (events.length > 1) {
+                    queueMessageText.textContent = `${events.length} events automatically scheduled from queue!`;
+                }
+                queueProcessedMessage.style.display = 'flex';
+                
+                // Hide message after 3 seconds
+                setTimeout(() => {
+                    queueProcessedMessage.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Render all events
+            function renderEvents() {
+                eventsList.innerHTML = '';
+                
+                if (calendar.events.length === 0) {
+                    noEvents.style.display = 'block';
+                } else {
+                    noEvents.style.display = 'none';
+                    
+                    calendar.events.forEach(event => {
+                        const eventItem = document.createElement('li');
+                        eventItem.className = 'event-item';
+                        
+                        if (event.isNewlyAdded) {
+                            eventItem.classList.add('newly-added');
+                            // Reset the flag after rendering
+                            setTimeout(() => {
+                                event.isNewlyAdded = false;
+                            }, 1000);
+                        }
+                        
+                        // Check if this event has conflicts (for highlighting)
+                        if (calendar.hasConflict(event)) {
+                            eventItem.classList.add('conflict');
+                        }
+                        
+                        const eventInfo = document.createElement('div');
+                        eventInfo.className = 'event-info';
+                        
+                        const eventTitle = document.createElement('h3');
+                        eventTitle.textContent = event.title;
+                        
+                        const eventTime = document.createElement('div');
+                        eventTime.className = 'event-time';
+                        eventTime.innerHTML = `<i class="far fa-clock"></i> ${formatDisplayDate(event.startTime)} - ${formatDisplayDate(event.endTime)}`;
+                        
+                        eventInfo.appendChild(eventTitle);
+                        eventInfo.appendChild(eventTime);
+                        
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'delete-btn';
+                        deleteBtn.innerHTML = '<i class="fas fa-trash"></i> Delete';
+                        deleteBtn.addEventListener('click', () => {
+                            const result = calendar.deleteEvent(event.id);
+                            if (result) {
+                                // Show processing indicator
+                                processingIndicator.style.display = 'block';
+                                
+                                // Wait a bit to show the processing animation
+                                setTimeout(() => {
+                                    renderAll();
+                                    
+                                    // Show message if queue events were processed
+                                    if (result.processedEvents.length > 0) {
+                                        showQueueProcessedMessage(result.processedEvents);
+                                    }
+                                    
+                                    // Hide processing indicator
+                                    processingIndicator.style.display = 'none';
+                                }, 800);
+                            }
+                        });
+                        
+                        eventItem.appendChild(eventInfo);
+                        eventItem.appendChild(deleteBtn);
+                        
+                        eventsList.appendChild(eventItem);
+                    });
+                }
+                
+                updateStats();
+            }
+            
+            // Render waiting queue
+            function renderQueue() {
+                queueList.innerHTML = '';
+                
+                if (calendar.waitingQueue.length === 0) {
+                    noQueue.style.display = 'block';
+                } else {
+                    noQueue.style.display = 'none';
+                    
+                    calendar.waitingQueue.forEach(event => {
+                        const queueItem = document.createElement('div');
+                        queueItem.className = 'queue-item';
+                        
+                        const eventTitle = document.createElement('strong');
+                        eventTitle.textContent = event.title;
+                        
+                        const eventTime = document.createElement('div');
+                        eventTime.className = 'event-time';
+                        eventTime.innerHTML = `<i class="far fa-clock"></i> ${formatDisplayDate(event.startTime)} - ${formatDisplayDate(event.endTime)}`;
+                        
+                        const waitingText = document.createElement('div');
+                        waitingText.className = 'event-time';
+                        waitingText.innerHTML = `<i class="fas fa-hourglass-half"></i> Waiting for available slot`;
+                        waitingText.style.color = 'var(--warning)';
+                        waitingText.style.fontSize = '0.8rem';
+                        waitingText.style.marginTop = '5px';
+                        
+                        queueItem.appendChild(eventTitle);
+                        queueItem.appendChild(eventTime);
+                        queueItem.appendChild(waitingText);
+                        
+                        queueList.appendChild(queueItem);
+                    });
+                }
+            }
+            
+            // Render deleted events stack
+            function renderStack() {
+                stackList.innerHTML = '';
+                
+                if (calendar.deletedStack.length === 0) {
+                    noStack.style.display = 'block';
+                    undoBtn.disabled = true;
+                } else {
+                    noStack.style.display = 'none';
+                    undoBtn.disabled = false;
+                    
+                    // Show stack in reverse order (top of stack first)
+                    const reversedStack = [...calendar.deletedStack].reverse();
+                    
+                    reversedStack.forEach(event => {
+                        const stackItem = document.createElement('div');
+                        stackItem.className = 'stack-item';
+                        
+                        const eventTitle = document.createElement('strong');
+                        eventTitle.textContent = event.title;
+                        
+                        const eventTime = document.createElement('div');
+                        eventTime.className = 'event-time';
+                        eventTime.innerHTML = `<i class="far fa-clock"></i> ${formatDisplayDate(event.startTime)} - ${formatDisplayDate(event.endTime)}`;
+                        
+                        stackItem.appendChild(eventTitle);
+                        stackItem.appendChild(eventTime);
+                        
+                        stackList.appendChild(stackItem);
+                    });
+                }
+            }
+            
+            // Format date for display
+            function formatDisplayDate(date) {
+                return date.toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            }
+            
+            // Render all components
+            function renderAll() {
+                renderEvents();
+                renderQueue();
+                renderStack();
+            }
+            
+            // Event form submission
+            eventForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const title = document.getElementById('event-title').value;
+                const startTime = document.getElementById('start-time').value;
+                const endTime = document.getElementById('end-time').value;
+                
+                if (new Date(startTime) >= new Date(endTime)) {
+                    alert('End time must be after start time!');
+                    return;
+                }
+                
+                const result = calendar.addEvent(title, startTime, endTime);
+                
+                if (result.success) {
+                    conflictMessage.style.display = 'none';
+                    eventForm.reset();
+                    
+                    // Reset to current time and 1 hour ahead
+                    const now = new Date();
+                    const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+                    
+                    document.getElementById('start-time').value = formatDateTime(now);
+                    document.getElementById('end-time').value = formatDateTime(oneHourLater);
+                } else {
+                    conflictMessage.style.display = 'flex';
+                }
+                
+                renderAll();
+            });
+            
+            // Undo button
+            undoBtn.addEventListener('click', function() {
+                const result = calendar.undoDelete();
+                if (result) {
+                    if (result.success) {
+                        // Show processing indicator
+                        processingIndicator.style.display = 'block';
+                        
+                        setTimeout(() => {
+                            renderAll();
+                            alert(`Event "${result.event.title}" restored successfully!`);
+                            processingIndicator.style.display = 'none';
+                        }, 800);
+                    } else {
+                        alert(result.message);
+                        renderAll();
+                    }
+                }
+            });
+            
+            // Clear all button
+            clearBtn.addEventListener('click', function() {
+                if (confirm("Are you sure you want to clear all events?")) {
+                    calendar.clearAllEvents();
+                    renderAll();
+                }
+            });
+            
+            // Theme toggle
+            themeToggle.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const icon = themeToggle.querySelector('i');
+                if (document.body.classList.contains('dark-mode')) {
+                    icon.classList.remove('fa-moon');
+                    icon.classList.add('fa-sun');
+                } else {
+                    icon.classList.remove('fa-sun');
+                    icon.classList.add('fa-moon');
+                }
+            });
+            
+            // Initial render
+            renderAll();
+            
+            // Add some sample events for demonstration
+            const sampleStart1 = new Date();
+            sampleStart1.setHours(sampleStart1.getHours() + 2);
+            const sampleEnd1 = new Date(sampleStart1.getTime() + 60 * 60 * 1000);
+            
+            const sampleStart2 = new Date();
+            sampleStart2.setDate(sampleStart2.getDate() + 1);
+            sampleStart2.setHours(14, 0, 0, 0);
+            const sampleEnd2 = new Date(sampleStart2.getTime() + 90 * 60 * 1000);
+            
+            const sampleStart3 = new Date();
+            sampleStart3.setDate(sampleStart3.getDate() + 2);
+            sampleStart3.setHours(10, 0, 0, 0);
+            const sampleEnd3 = new Date(sampleStart3.getTime() + 120 * 60 * 1000);
+            
+            calendar.addEvent(
+                "Data Structures Lecture", 
+                formatDateTime(sampleStart1), 
+                formatDateTime(sampleEnd1)
+            );
+            
+            calendar.addEvent(
+                "Algorithms Lab", 
+                formatDateTime(sampleStart2), 
+                formatDateTime(sampleEnd2)
+            );
+            
+            calendar.addEvent(
+                "Computer Networks", 
+                formatDateTime(sampleStart3), 
+                formatDateTime(sampleEnd3)
+            );
+            
+            // Add conflicting events to demonstrate queue
+            const conflictStart1 = new Date(sampleStart1.getTime() + 30 * 60 * 1000);
+            const conflictEnd1 = new Date(conflictStart1.getTime() + 60 * 60 * 1000);
+            
+            const conflictStart2 = new Date(sampleStart2.getTime() + 45 * 60 * 1000);
+            const conflictEnd2 = new Date(conflictStart2.getTime() + 60 * 60 * 1000);
+            
+            calendar.addEvent(
+                "Math Tutorial", 
+                formatDateTime(conflictStart1), 
+                formatDateTime(conflictEnd1)
+            );
+            
+            calendar.addEvent(
+                "Physics Lab", 
+                formatDateTime(conflictStart2), 
+                formatDateTime(conflictEnd2)
+            );
+            
+            renderAll();
+        });
+    </script>
+</body>
+</html>
